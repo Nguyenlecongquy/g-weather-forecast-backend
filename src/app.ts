@@ -1,14 +1,13 @@
-import express, {Request, Response} from "express";
+import express, {Request, Response, NextFunction} from "express";
 import * as dotenv from 'dotenv'
+import routes from "./routes";
 dotenv.config()
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Hello World" });
-});
+routes(app);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
