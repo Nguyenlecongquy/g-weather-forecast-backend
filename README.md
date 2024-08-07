@@ -8,5 +8,5 @@
 ### Production
 You can test this api
 1. Weather forecast (1 to 14 days)
-* API: `...`
+* API: `https://g-weather-forecast-backend-4y3c.onrender.com`
 * params: city: string, days: number (optional, default: 5, range 0 - 14)

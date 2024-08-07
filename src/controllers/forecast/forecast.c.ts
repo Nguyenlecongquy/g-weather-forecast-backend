@@ -1,8 +1,7 @@
-import express, { NextFunction, Request, Response } from "express";
+import { Express, Request, Response, NextFunction } from "express";
 import { getWeatherForecast } from "../../config/axios";
-const forecastRouter = express.Router();
 
-forecastRouter.get("/", (req: Request, res: Response, next: NextFunction) => {
+const getInfor = (req: Request, res: Response, next: NextFunction): void => {
   const city = req.query.city as string;
   const days = req.query.days as string;
   let daysInt: number = 5;
@@ -29,6 +28,6 @@ forecastRouter.get("/", (req: Request, res: Response, next: NextFunction) => {
   } catch (error: any) {
     next(error);
   }
-});
+};
 
-export default forecastRouter;
+export { getInfor };
