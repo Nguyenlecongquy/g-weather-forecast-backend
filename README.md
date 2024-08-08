@@ -9,4 +9,4 @@
 You can test this api
 1. Weather forecast (1 to 14 days)
 * API: `https://g-weather-forecast-backend-4y3c.onrender.com/v1/weather-forecast/search`
-* params: city (name, zip, postcode or position of city, etc), days (optional, default: 5, range 0 - 14)
+* params: city (Name, Zipcode, Postcode, Postalcode or Position of city, IP address), days (Number of days of weather forecast, optional, default: 5, range 0 - 14)
