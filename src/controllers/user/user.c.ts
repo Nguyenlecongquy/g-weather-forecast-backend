@@ -1,5 +1,5 @@
 import { Express, Request, Response, NextFunction } from "express";
-import { getAllUserRegister } from "../../models/user/user.m";
+import { getAllUserRegister, insertUser } from "../../models/user/user.m";
 
 const getUser = async (
   req: Request,
@@ -14,4 +14,18 @@ const getUser = async (
   res.json({ listEmail: users });
 };
 
-export { getUser };
+const addUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { email, accept } = req.body;
+  const result = await insertUser(email, accept);
+  if (!result) {
+    res.status(404).json({ message: "connect database and insert information fail." });
+    return;
+  }
+  res.json({ message: "insert user success." });
+};
+
+export { getUser, addUser };

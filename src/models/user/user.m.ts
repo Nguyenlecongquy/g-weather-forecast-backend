@@ -1,15 +1,5 @@
 import pool from "../../connect/db";
 
-let client: any = null;
-
-try {
-  client = pool.connect();
-  console.log("client", client);
-  console.log("User model connect database successfully!");
-} catch (error: any) {
-  console.log("User model connect database fail!");
-}
-
 const getAllUserRegister = async (): Promise<false | any> => {
   const query = `SELECT email FROM public."user" WHERE accept = true`;
   try {
@@ -21,4 +11,32 @@ const getAllUserRegister = async (): Promise<false | any> => {
   }
 };
 
-export { getAllUserRegister };
+const insertUser = async (
+  email: string,
+  accept: boolean
+): Promise<false | any> => {
+  const query = `INSERT INTO public."user" (email, accept) VALUES ('${email}', '${accept}')`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.log("Insert user fail!", error);
+    return false;
+  }
+};
+
+const updateUser = async (
+  email: string,
+  accept: boolean
+): Promise<false | any> => {
+  const query = `UPDATE public."user" SET accept = '${accept}' WHERE email = '${email}'`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.log("Update user fail!", error);
+    return false;
+  }
+};
+
+export { getAllUserRegister, insertUser, updateUser };
