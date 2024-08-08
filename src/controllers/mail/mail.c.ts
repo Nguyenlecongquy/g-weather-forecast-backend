@@ -1,5 +1,9 @@
 import { Express, Request, Response, NextFunction } from "express";
-import { updateUser } from "../../models/user/user.m";
+import {
+  updateUser,
+  getAllUserRegister,
+  insertUser,
+} from "../../models/user/user.m";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -70,14 +74,29 @@ const verifyEmail = async (
 ): Promise<void> => {
   const email: string = String(req.query.email);
   const city: string = String(req.query.city);
-  const result = await updateUser(email, true, city);
-  if (!result) {
-    res
-      .status(404)
-      .json({ message: "connect database and insert information fail." });
-    return;
+  const listEmail = await getAllUserRegister();
+
+  // If email is not in the list, create a new user
+  if (!listEmail.find((item: any) => item.email === email)) {
+    let result = await insertUser(email, true, city);
+    if (!result) {
+      res
+        .status(404)
+        .json({ message: "connect database and insert information fail." });
+      return;
+    }
+    res.json({ message: "verify email success" });
+  } else {
+    let result = await updateUser(email, true, city);
+
+    if (!result) {
+      res
+        .status(404)
+        .json({ message: "connect database and insert information fail." });
+      return;
+    }
+    res.json({ message: "verify email success" });
   }
-  res.json({ message: "verify email success" });
 };
 
 const unsubscribe = async (

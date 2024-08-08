@@ -13,9 +13,13 @@ const getAllUserRegister = async (): Promise<false | any> => {
 
 const insertUser = async (
   email: string,
-  accept: boolean
+  accept: boolean,
+  city?: string
 ): Promise<false | any> => {
-  const query = `INSERT INTO public."user" (email, accept) VALUES ('${email}', '${accept}')`;
+  let query = `INSERT INTO public."user" (email, accept) VALUES ('${email}', '${accept}')`;
+  if (city) {
+    query = `INSERT INTO public."user" (email, accept, city) VALUES ('${email}', '${accept}', '${city}')`;
+  }
   try {
     const { rows } = await pool.query(query);
     return rows;
