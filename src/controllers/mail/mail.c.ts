@@ -17,11 +17,11 @@ const sendEmailConfirmation = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { email } = req.body;
+  const { email, city } = req.body;
   const contain = `
     <h1> CQueue7 - Weather Forecast Center </h1>
     <p> Please confirm your email to receive daily weather forecast information </p>
-    <a href="${process.env.HOST_BACKEND}/v1/email/verify-email?email=${email}"> Click here to confirm your email </a>
+    <a href="${process.env.HOST_BACKEND}/v1/email/verify-email?email=${email}&city=${city}"> Click here to confirm your email </a>
     <p> Thank you! </p>
 `;
   const mailOptions = {
@@ -31,8 +31,36 @@ const sendEmailConfirmation = async (
     html: contain,
   };
   const info = await transporter.sendMail(mailOptions);
-  console.log("Message sent: %s", info.messageId);
+  if (!info) {
+    res.status(404).json({ message: "send email confirmation fail" });
+    return;
+  }
   res.json({ message: `send email confirmation success` });
+};
+
+const sendEmailUnsubscribe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { email } = req.body;
+  const contain = `
+        <h1> CQueue7 - Weather Forecast Center </h1>
+        <p> You have successfully unsubscribed from receiving daily weather forecast information </p>
+        <p> Thank you! </p>
+    `;
+  const mailOptions = {
+    from: process.env.EMAIL_SOURCE,
+    to: email,
+    subject: "Unsubscribe",
+    html: contain,
+  };
+  const info = await transporter.sendMail(mailOptions);
+  if (!info) {
+    res.status(404).json({ message: "send email unsubscribe fail" });
+    return;
+  }
+  res.json({ message: `send email unsubscribe success` });
 };
 
 const verifyEmail = async (
@@ -41,7 +69,8 @@ const verifyEmail = async (
   next: NextFunction
 ): Promise<void> => {
   const email: string = String(req.query.email);
-  const result = await updateUser(email, true);
+  const city: string = String(req.query.city);
+  const result = await updateUser(email, true, city);
   if (!result) {
     res
       .status(404)
@@ -56,7 +85,7 @@ const unsubscribe = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const email: string = String(req.query.email);
+  const { email } = req.body;
   const result = await updateUser(email, false);
   if (!result) {
     res
@@ -67,4 +96,9 @@ const unsubscribe = async (
   res.json({ message: "unsubscribe success" });
 };
 
-export { sendEmailConfirmation, verifyEmail, unsubscribe };
+export {
+  sendEmailConfirmation,
+  sendEmailUnsubscribe,
+  verifyEmail,
+  unsubscribe,
+};

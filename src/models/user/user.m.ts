@@ -27,9 +27,13 @@ const insertUser = async (
 
 const updateUser = async (
   email: string,
-  accept: boolean
+  accept: boolean,
+  city?: string
 ): Promise<false | any> => {
-  const query = `UPDATE public."user" SET accept = '${accept}' WHERE email = '${email}'`;
+  let query = `UPDATE public."user" SET accept = '${accept}' WHERE email = '${email}'`;
+  if (city) {
+    query = `UPDATE public."user" SET accept = '${accept}', city = '${city}' WHERE email = '${email}'`;
+  }
   try {
     const { rows } = await pool.query(query);
     return rows;
