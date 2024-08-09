@@ -47,4 +47,15 @@ const updateUser = async (
   }
 };
 
-export { getAllUserRegister, insertUser, updateUser };
+const getCityUser = async (email: string): Promise<false | any> => {
+  const query = `SELECT city FROM public."user" WHERE email = '${email}'`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.log("Get city user fail!", error);
+    return false;
+  }
+};
+
+export { getAllUserRegister, insertUser, updateUser, getCityUser };
