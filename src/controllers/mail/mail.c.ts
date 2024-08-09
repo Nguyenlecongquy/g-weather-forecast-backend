@@ -48,6 +48,11 @@ const sendEmailUnsubscribe = async (
   next: NextFunction
 ): Promise<void> => {
   const { email } = req.body;
+  const listEmail = await getAllUserRegister();
+  if (!listEmail.find((item: any) => item.email === email)) {
+    res.status(404).json({ message: "email is not registered" });
+    return;
+  }
   const contain = `
         <h1> CQueue7 - Weather Forecast Center </h1>
         <p> You have successfully unsubscribed from receiving daily weather forecast information </p>
@@ -105,6 +110,11 @@ const unsubscribe = async (
   next: NextFunction
 ): Promise<void> => {
   const { email } = req.body;
+  const listEmail = await getAllUserRegister();
+  if (!listEmail.find((item: any) => item.email === email)) {
+    res.status(404).json({ message: "email is not registered" });
+    return;
+  }
   const result = await updateUser(email, false);
   if (!result) {
     res
